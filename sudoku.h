@@ -18,7 +18,8 @@ public:
 
 private:
 	char grid[9][9];
-	ofstream resultfile;
+	//ofstream resultfile;
 	//void PrintTOFile();
-
+        FILE *resultfile1;
+	FILE *resultfile2;
 };
