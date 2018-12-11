@@ -9,23 +9,23 @@ bool Sudoku::isPlace(int count)
 	int row = count / 9;
 	int col = count % 9;
 	int j;
-	for (j = 0; j < 9; j++)     //Í¬Ò»ĞĞ
+	for (j = 0; j < 9; j++)     //åŒä¸€è¡Œ
 	{
 		if (grid[row][j] == grid[row][col] && j != col)
 			return false;
 	}
 	
-	for (j = 0; j < 9; j++)     //Í¬Ò»ÁĞ
+	for (j = 0; j < 9; j++)     //åŒä¸€åˆ—
 	{
 		if (grid[j][col] == grid[row][col] && j != row)
 			return false;
 	}
 	
-	int tempRow = row / 3 * 3;
-	int tempCol = col / 3 * 3;
-	for (j = tempRow; j < tempRow + 3; j++)   //Í¬Ò»¹¬
+	int baseRow = row / 3 * 3;
+	int baseCol = col / 3 * 3;
+	for (j = baseRow; j < baseRow + 3; j++)   //åŒä¸€å®«
 	{
-		for (int k = tempCol; k < tempCol + 3; k++)
+		for (int k = baseCol; k < baseCol + 3; k++)
 		{
 			if (grid[j][k] == grid[row][col] && j != row && k != col)
 				return false;
@@ -36,32 +36,30 @@ bool Sudoku::isPlace(int count)
 
 void Sudoku::backtrace(int count)
 {
-	//resultfile.open("sudoku.txt");
 	if (count == 81)
 	{
 		for (int i = 0; i < 9; ++i)
 		{
-			for (int j = 0; j < 9; ++j)
-				resultfile << grid[i][j] << " ";
-			resultfile << endl;
+			
+			fprintf(resultfile2, "%c %c %c %c %c %c %c %c %c\n", grid[i][0], grid[i][1], grid[i][2], grid[i][3], grid[i][4], grid[i][5], grid[i][6], grid[i][7], grid[i][8]);
 		}
-		resultfile << endl;
+		fputs("\n", resultfile2);
 		return;
 	}
-	int row = count / 9;   //position¶ÔÓ¦µÄx×ø±ê
-	int col = count % 9;  //position¶ÔÓ¦µÄy×ø±ê
+	int row = count / 9;   //positionå¯¹åº”çš„xåæ ‡
+	int col = count % 9;  //positionå¯¹åº”çš„yåæ ‡
 	if (grid[row][col] == '0')
 	{
-		for (int i = 1; i <= 9; i++)//³¢ÊÔ¶ÔÕâÒ»µã½øĞĞ1~9µÄ¸³Öµ
+		for (int i = 1; i <= 9; i++)//å°è¯•å¯¹è¿™ä¸€ç‚¹è¿›è¡Œ1~9çš„èµ‹å€¼
 		{
 			grid[row][col] = i + '0';
-			if (isPlace(count))//¿ÉÒÔ·Å
+			if (isPlace(count))//å¯ä»¥æ”¾
 			{
-               backtrace(count + 1);//½øÈëÏÂÒ»²ã
+               backtrace(count + 1);//è¿›å…¥ä¸‹ä¸€å±‚
 			}
 				
 		}
-		grid[row][col] = '0';//»ØËİ
+		grid[row][col] = '0';//å›æº¯
 	}
 	else
 	backtrace(count + 1);
@@ -70,30 +68,35 @@ void Sudoku::backtrace(int count)
 void Sudoku::solveSudoku(string path)
 {
 	ifstream problemfile(path);
+
+	//fopen_sç”¨æ³•:ï¼Œé¡»å®šä¹‰å¦å¤–ä¸€ä¸ªå˜é‡errno_t errï¼Œç„¶åerr = fopen_s(&fp, filename, "w")ã€‚
+	errno_t err;
+	err = fopen_s(&resultfile2, "sudoku.txt", "w+");
+
 	if (problemfile)
 	{
 		int total = 0;
 		string temp[9];
 		string str;
 		int line = 0;
-		bool exc = false;     // Ê¶±ğÔÚproblemfileÓĞÃ»ÓĞ´íÎóÊäÈë
+		bool exc = false;     // è¯†åˆ«åœ¨problemfileæœ‰æ²¡æœ‰é”™è¯¯è¾“å…¥
 		while (total < 1000000 && getline(problemfile, str))
 		{
-			temp[line] = str;  //´ÓproblemfileÖĞ¶ÁÈ¡Ò»ĞĞµ½tempÖĞ
+			temp[line] = str;  //ä»problemfileä¸­è¯»å–ä¸€è¡Œåˆ°tempä¸­
 			line++;
-			if (line == 9)   //Ã¿¶ÁÈë9ĞĞ½øĞĞÒ»´Î´¦Àí
+			if (line == 9)   //æ¯è¯»å…¥9è¡Œè¿›è¡Œä¸€æ¬¡å¤„ç†
 			{
 				for (int i = 0; i < 9; i++)
 					for (int j = 0; j < 9; j++)
 					{
-						grid[i][j] = temp[i][2 * j];  //Ìø¹ı¿Õ¸ñ½«Ò»¸öÊı¶ÀÎÊÌâ×°ÈëgridÖĞ
+						grid[i][j] = temp[i][2 * j];  //è·³è¿‡ç©ºæ ¼å°†ä¸€ä¸ªæ•°ç‹¬é—®é¢˜è£…å…¥gridä¸­
 						if (grid[i][j] < '0' || grid[i][j] > '9')
 						{
 							exc = true;
 							break;
 						}
 					}
-				getline(problemfile, str);//¶ÁÈëÒ»¸öÌâÄ¿ºóµÄ¿ÕĞĞ
+				getline(problemfile, str);//è¯»å…¥ä¸€ä¸ªé¢˜ç›®åçš„ç©ºè¡Œ
 				line = 0;
 				if (exc)
 				{
