@@ -27,7 +27,7 @@ bool Sudoku::isPlace(int count)
 	{
 		for (int k = baseCol; k < baseCol + 3; k++)
 		{
-			if (grid[j][k] == grid[row][col] && j != row && k != col)
+			if (grid[j][k] == grid[row][col] && (j != row || k != col))
 				return false;
 		}
 	}
