@@ -9,7 +9,8 @@ Sudoku::Sudoku()
 	for (int i = 0; i < 9; i++)
 		for (int j = 0; j < 9; j++)
 			grid[i][j] = 0;
-
+	for (int i = 0; i < 162; i++)
+		matrix[i] = ' ';
 	//resultfile.open("sudoku.txt");
 }
 
@@ -18,7 +19,7 @@ void Sudoku::createSudoku(int sudokuCount)
 	//fopen_s用法:，须定义另外一个变量errno_t err，然后err = fopen_s(&fp, filename, "w")。
 	errno_t err;
 	err = fopen_s(&resultfile1, "sudoku.txt", "w");
-
+	cout << "打开写文件sudoku.txt" << endl;
 	int count = 0;
 	//char data_store[200]= {' '};
 	int shift[9] = { 0, 3, 6, 1, 4, 7, 2, 5, 8 };
@@ -44,9 +45,20 @@ void Sudoku::createSudoku(int sudokuCount)
 				if (k) next_permutation(row + 1, row + 9);//第一个数字不能换 学号：1120161760
 				
 				//fputs(data_store, resultfile1);
-				for (int r = 0; r < 9; r++)
-					fprintf(resultfile1, "%c %c %c %c %c %c %c %c %c\n", row[(0 + shift[r]) % 9], row[(1 + shift[r]) % 9], row[(2 + shift[r]) % 9], row[(3 + shift[r]) % 9], row[(4 + shift[r]) % 9], row[(5 + shift[r]) % 9], row[(6 + shift[r]) % 9], row[(7 + shift[r]) % 9], row[(8 + shift[r]) % 9]);
-			
+				int m = 0;
+				for (int i = 0; i < 9; i++)
+				{
+					for (int j = 0; j < 9; j++)
+					{
+						matrix[m] = row[(j + shift[i]) % 9];
+						m += 2;
+					}
+					matrix[m - 1] = '\n';
+				}
+				
+			  
+				   fputs(matrix, resultfile1);
+				  
 				fputs("\n", resultfile1);
 				count++;
 			}
