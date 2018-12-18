@@ -22,4 +22,5 @@ private:
 	//void PrintTOFile();
         FILE *resultfile1;
 	FILE *resultfile2;
+	char matrix[162] = {' '};
 };
