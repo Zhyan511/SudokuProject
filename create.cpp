@@ -4,14 +4,16 @@
 #include<stdio.h>
 using namespace std;
 
+#pragma region createSudokuStatement
+char matx[200000000];
+#pragma endregion
+
 Sudoku::Sudoku()
 {
 	for (int i = 0; i < 9; i++)
 		for (int j = 0; j < 9; j++)
 			grid[i][j] = 0;
-	for (int i = 0; i < 162; i++)
-		matrix[i] = ' ';
-	//resultfile.open("sudoku.txt");
+
 }
 
 void Sudoku::createSudoku(int sudokuCount)
@@ -23,10 +25,15 @@ void Sudoku::createSudoku(int sudokuCount)
 	int count = 0;
 	//char data_store[200]= {' '};
 	int shift[9] = { 0, 3, 6, 1, 4, 7, 2, 5, 8 };
+
 	for (int i = 0; i < 6; i++)
 	{
 		if (count >= sudokuCount)
+		{
+			matx[count * 163 - 1] = '\0';
 			break;
+		}
+
 		if (i)
 		{
 			next_permutation(shift + 3, shift + 6);     //交换4~6行的任意两行
@@ -43,25 +50,26 @@ void Sudoku::createSudoku(int sudokuCount)
 				if (count >= sudokuCount)
 					break;
 				if (k) next_permutation(row + 1, row + 9);//第一个数字不能换 学号：1120161760
-				
-				//fputs(data_store, resultfile1);
+
 				int m = 0;
 				for (int i = 0; i < 9; i++)
 				{
 					for (int j = 0; j < 9; j++)
 					{
-						matrix[m] = row[(j + shift[i]) % 9];
+						matx[m + count * 163] = row[(j + shift[i]) % 9];
+						//matrix[m] = row[(j + shift[i]) % 9];
 						m += 2;
 					}
-					matrix[m - 1] = '\n';
+					//matrix[m - 1] = '\n';
+					matx[(m - 1) + 163 * count] = '\n';
 				}
-				
-			  
-				   fputs(matrix, resultfile1);
-				  
-				fputs("\n", resultfile1);
+				//matrix[162] = '\n';
+				matx[162 + 163 * count] = '\n';
+				// fputs(matrix, resultfile1);  
+				//fputs("\n", resultfile1);
 				count++;
 			}
 		}
 	}
+	fputs(matx, resultfile1);
 }
