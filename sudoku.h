@@ -17,7 +17,7 @@ public:
 	bool isPlace(int count);
 
 private:
-	char grid[9][9];
+	char grid[9][9]={0};
 	//ofstream resultfile;
 	//void PrintTOFile();
         FILE *resultfile1;
